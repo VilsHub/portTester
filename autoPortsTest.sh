@@ -57,7 +57,7 @@ case "$variable" in
     ;;
     p)
         portFile=$OPTARG
-        fileExist $serverFile
+        fileExist $portFile
     ;;
     t)
         tool=$OPTARG
@@ -96,18 +96,17 @@ if [[ $useLabel = "y" || $useLabel = "Y" ]]; then
         if [ -f $sName ]; then
             labelScript=$sName
             res=1
+
+            # _________________Banks labels starts________________
+            source $labelScript
+            #________________Banks labels ends___________________
+
         else
             echo "The script '$sName' could not be located, confirm the script name and try again or leave blank and press Enter to skip using script label"
         fi
     done
-fi
-
-if [ -z $labelScript ]; then
-    declare -A banks
 else
-    # _________________Banks labels starts________________
-    source $labelScript
-    #________________Banks labels ends___________________
+    declare -A banks
 fi
 
 # read in servers IP and ports
@@ -123,9 +122,7 @@ fi
 for server in ${servers[@]}; do
 
     # Parse Data
-    trimmed_server="${server#"${server%%[![:space:]]*}"}"
-    trimmed_server="${trimmed_server%"${trimmed_server##*[![:space:]]}"}"
-
+    trimmed_server=$(echo $server | sed 's/[^a-zA-Z0-9\.]//g')
     echo -e "NOW TESTING PORTS CONNECTIVITY WITH ${banks["$trimmed_server"]}($trimmed_server)\n"
 
     if [ ! -z $labelScript ]; then
@@ -144,8 +141,7 @@ for server in ${servers[@]}; do
     for port in ${ports[@]}; do
 
         # Parse Data
-        trimmed_port="${port#"${port%%[![:space:]]*}"}"
-        trimmed_port="${trimmed_port%"${trimmed_port##*[![:space:]]}"}"
+        trimmed_port=$(echo $port | sed 's/[^a-zA-Z0-9]//g')
 
         echo "Testing connectivity with ${banks["$trimmed_server"]}($trimmed_server) on port $trimmed_port"
 
