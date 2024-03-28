@@ -42,8 +42,7 @@ readarray -t ports < $portFile
 
 for port in "${ports[@]}"; do
   # Parse Data
-  trimmed_port="${port#"${port%%[![:space:]]*}"}"
-  trimmed_port="${trimmed_port%"${trimmed_port##*[![:space:]]}"}"
+  trimmed_port=$(echo $port | sed 's/[^0-9]//g')
   start_listener $trimmed_port
 done
 
