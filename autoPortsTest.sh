@@ -97,16 +97,16 @@ if [[ $useLabel = "y" || $useLabel = "Y" ]]; then
             labelScript=$sName
             res=1
 
-            # _________________Banks labels starts________________
+            # _________________Server labels starts________________
             source $labelScript
-            #________________Banks labels ends___________________
+            #________________Server labels ends___________________
 
         else
             echo "The script '$sName' could not be located, confirm the script name and try again or leave blank and press Enter to skip using script label"
         fi
     done
 else
-    declare -A banks
+    declare -A r_servers
 fi
 
 # read in servers IP and ports
@@ -123,18 +123,18 @@ for server in ${servers[@]}; do
 
     # Parse Data
     trimmed_server=$(echo $server | sed 's/[^a-zA-Z0-9\.]//g')
-    echo -e "NOW TESTING PORTS CONNECTIVITY WITH ${banks["$trimmed_server"]}($trimmed_server)\n"
+    echo -e "NOW TESTING PORTS CONNECTIVITY WITH ${r_servers["$trimmed_server"]}($trimmed_server)\n"
 
     if [ ! -z $labelScript ]; then
         # Remove space if available from label
-        label=$(echo "${banks["$trimmed_server"]}" | sed 's/ /_/g')
+        label=$(echo "${r_servers["$trimmed_server"]}" | sed 's/ /_/g')
         output="./output/${label}_Ports_test_result.txt"
     else
         output="./output/${trimmed_server}_Ports_test_result.txt"
     fi
 
 
-    echo "PORTS CONNECTIVITY TEST WITH ${banks["$trimmed_server"]}($trimmed_server) RESULT" > $output
+    echo "PORTS CONNECTIVITY TEST WITH ${r_servers["$trimmed_server"]}($trimmed_server) RESULT" > $output
     echo -e "\n" >> $output
     echo -e "PORTS\t----------\tSTATE" >> $output
 
@@ -143,7 +143,7 @@ for server in ${servers[@]}; do
         # Parse Data
         trimmed_port=$(echo $port | sed 's/[^a-zA-Z0-9]//g')
 
-        echo "Testing connectivity with ${banks["$trimmed_server"]}($trimmed_server) on port $trimmed_port"
+        echo "Testing connectivity with ${r_servers["$trimmed_server"]}($trimmed_server) on port $trimmed_port"
 
         if [ $tool == "telnet" ]; then
             timeout --foreground $timeout telnet $trimmed_server $trimmed_port > temp_output
@@ -158,12 +158,12 @@ for server in ${servers[@]}; do
             echo -e "Exit code: $ec, Connected succesfully\n"
             echo -e "$trimmed_port\t----------\tConnected successfully" >> $output
         elif [ $ec -ne 0 ]; then
-            echo -e "Exit code: $ec, Could not connect to the server ${banks["$trimmed_server"]}($trimmed_server) on port $trimmed_port\n"
+            echo -e "Exit code: $ec, Could not connect to the server ${r_servers["$trimmed_server"]}($trimmed_server) on port $trimmed_port\n"
             echo -e "$trimmed_port\t----------\tCould not connect" >> $output
         fi
     done
 
-    echo -e "\nPorts testing completed successfully for the ${banks["$trimmed_server"]}($trimmed_server), you can view the test result in the file $output\n\n"
+    echo -e "\nPorts testing completed successfully for the ${r_servers["$trimmed_server"]}($trimmed_server), you can view the test result in the file $output\n\n"
 
     sleep 2s
 done

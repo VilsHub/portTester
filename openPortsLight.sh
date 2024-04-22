@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#Call using the format scriptName -p portsFile
+# Call using the format [scriptName -p portsFile]. This script is needed in an environment where there is no docker
 
 # _________________Functions definitions starts_____________
 function fileExist (){
