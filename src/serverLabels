@@ -1,5 +1,5 @@
 #!/bin/bash
 declare -A r_servers
-servers["10.199.212.2"]="Master node"
-servers["10.199.212.3"]="Worker node 1"
-servers["10.199.212.4"]="Worker node 2"
+r_servers["10.199.212.2"]="Master node"
+r_servers["10.199.212.3"]="Worker node 1"
+r_servers["10.199.212.4"]="Worker node 2"
